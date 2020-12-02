@@ -1,0 +1,50 @@
+server:
+  port: 8500
+
+spring:
+  application:
+    name: cloud-config
+  profiles:
+    active: native
+
+application:
+  project:
+    name: cloud-config
+
+logging:
+  level:
+    root: debug
+  path:
+    root: ./logs
+
+---
+spring:
+  profiles: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations:
+            - file:${developer.git.local-git-storage}
+            - file:${developer.git.local-git-storage}/infra
+            - file:${developer.git.local-git-storage}/services
+
+developer:
+  git:
+    local-git-storage: ./config
+
+---
+spring:
+  profiles: local
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:${developer.git.local-git-storage}
+          search-paths:
+            - infra
+            - services
+
+developer:
+  git:
+    local-git-storage: ./config
